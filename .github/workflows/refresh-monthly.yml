@@ -1,0 +1,122 @@
+name: Monthly WHOIS Refresh
+
+on:
+  schedule:
+    - cron: '0 3 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies
+        run: sudo apt-get install -y whois
+
+      - name: Refresh domains active in last 90 days
+        shell: python3 {0}
+        run: |
+          import json, subprocess, sys
+          from pathlib import Path
+          from datetime import datetime, timezone, timedelta
+
+          CUTOFF_DAYS = 90
+          now     = datetime.now(timezone.utc)
+          cutoff  = now - timedelta(days=CUTOFF_DAYS)
+          now_str = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+          index_file = Path("web/data/index.json")
+          if not index_file.exists():
+              print("[i] No index.json — nothing to refresh.")
+              sys.exit(0)
+
+          with open(index_file) as f:
+              index = json.load(f)
+
+          domains   = index.get("domains", [])
+          refreshed = 0
+          skipped   = 0
+
+          for entry in domains:
+              domain   = entry["domain"]
+              last_str = entry.get("last_refreshed") or entry.get("queried_at", "")
+
+              try:
+                  last_dt = datetime.fromisoformat(last_str.replace("Z", "+00:00"))
+                  if last_dt < cutoff:
+                      print(f"[skip] {domain} — last refreshed {last_str} (>{CUTOFF_DAYS}d ago)")
+                      skipped += 1
+                      continue
+              except Exception:
+                  pass
+
+              domain_file = Path(f"web/data/domains/{domain}.json")
+              existing    = {}
+              if domain_file.exists():
+                  try:
+                      with open(domain_file) as f:
+                          existing = json.load(f)
+                  except Exception:
+                      pass
+
+              print(f"[>] Refreshing {domain}")
+              result = subprocess.run(
+                  [sys.executable, "whois-extracter.py", "-d", domain,
+                   "-o", str(domain_file), "--no-cache"],
+                  capture_output=True, text=True
+              )
+
+              if result.returncode != 0:
+                  print(f"[!] Failed: {domain}\n{result.stderr}")
+                  continue
+
+              if domain_file.exists():
+                  with open(domain_file) as f:
+                      data = json.load(f)
+
+                  data["display_name"]   = existing.get("display_name", "")
+                  data["display_loc"]    = existing.get("display_loc", "")
+                  data["queried_at"]     = existing.get("queried_at", data.get("queried_at", ""))
+                  data["last_refreshed"] = now_str
+
+                  with open(domain_file, "w") as f:
+                      json.dump(data, f, indent=2)
+
+                  analysis = data.get("analysis", {})
+                  parsed   = data.get("parsed", {})
+                  entry["risk_score"]     = analysis.get("risk_score", 0)
+                  entry["risk_level"]     = analysis.get("risk_level", "INFO")
+                  entry["signals_count"]  = len(analysis.get("signals", []))
+                  entry["ns_type"]        = analysis.get("ns_type", "")
+                  entry["registrar_tier"] = analysis.get("registrar_tier", "")
+                  entry["age_days"]       = parsed.get("dates", {}).get("age_days", 0)
+                  entry["last_refreshed"] = now_str
+
+                  refreshed += 1
+
+          index["generated_at"]  = now_str
+          index["total_domains"] = len(domains)
+          index["total_scans"]   = len(domains)
+
+          with open(index_file, "w") as f:
+              json.dump(index, f, indent=2)
+
+          print(f"\n[+] Done: {refreshed} refreshed, {skipped} skipped (>{CUTOFF_DAYS}d inactive)")
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add web/data/
+          git diff --staged --quiet || (git commit -m "[data] monthly whois refresh [skip ci]" && git push)

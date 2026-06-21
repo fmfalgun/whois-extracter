@@ -132,6 +132,11 @@ RISK_LOW_THRESHOLD    = 10
 # Path to the local TTL cache database — always relative to CWD.
 CACHE_DB = "./cache.db"
 
+__version__ = "2.0.0"
+
+CONFIG_PATH        = Path.home() / ".config" / "whois-extracter" / "config.json"
+GITHUB_ISSUES_URL  = "https://api.github.com/repos/fmfalgun/whois-extracter/issues"
+
 
 # ════════════════════════════════════════════════════════════════════════════
 # CACHE — SQLite TTL cache
@@ -1017,7 +1022,105 @@ def run(domain: str, no_cache: bool, ttl_hours: int,
 
 
 # ════════════════════════════════════════════════════════════════════════════
-# STEP 7 — CLI Entry Point
+# STEP 7 — Submission helpers (v2)
+# ════════════════════════════════════════════════════════════════════════════
+
+def load_config() -> Optional[dict]:
+    """Load stored config from CONFIG_PATH. Returns None if not found or invalid."""
+    if not CONFIG_PATH.exists():
+        return None
+    try:
+        return json.loads(CONFIG_PATH.read_text())
+    except Exception:
+        return None
+
+
+def save_config(cfg: dict) -> None:
+    """Write config dict to CONFIG_PATH, creating parent dirs if needed."""
+    CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    CONFIG_PATH.write_text(json.dumps(cfg, indent=2))
+
+
+def setup_wizard() -> dict:
+    """
+    First-time interactive setup. Asks for GitHub PAT, display name, location.
+    Saves to CONFIG_PATH. Returns the config dict.
+    """
+    print("\n[setup] whois-extracter first-time configuration")
+    print("        Your GitHub PAT needs Issues: write scope.")
+    print("        Create one at: https://github.com/settings/tokens\n")
+
+    token        = input("  GitHub PAT       : ").strip()
+    display_name = input("  Display name     : ").strip()
+    display_loc  = input("  Location (city)  : ").strip()
+
+    cfg = {
+        "github_token": token,
+        "display_name": display_name,
+        "display_loc":  display_loc,
+    }
+    save_config(cfg)
+    print(f"[setup] Config saved to {CONFIG_PATH}\n")
+    return cfg
+
+
+def submit_result(result: dict, config: dict) -> None:
+    """
+    POST a GitHub Issue to the whois-extracter repo.
+    Title: [submission] domain
+    Body: JSON with domain, display_name, display_loc, risk analysis, parsed data.
+    """
+    import urllib.request
+
+    domain = result.get("domain", "")
+    token  = config.get("github_token", "")
+
+    if not token:
+        print("[!] No GitHub token in config — run with --reconfigure to set one.")
+        return
+
+    body_data = {
+        "domain":       domain,
+        "display_name": config.get("display_name", ""),
+        "display_loc":  config.get("display_loc", ""),
+        "queried_at":   result.get("queried_at", ""),
+        "risk_score":   result.get("analysis", {}).get("risk_score"),
+        "risk_level":   result.get("analysis", {}).get("risk_level"),
+        "ns_type":      result.get("analysis", {}).get("ns_type"),
+        "registrar_tier": result.get("analysis", {}).get("registrar_tier"),
+        "signals":      result.get("analysis", {}).get("signals", []),
+        "parsed":       result.get("parsed", {}),
+    }
+
+    issue = {
+        "title": f"[submission] {domain}",
+        "body":  json.dumps(body_data),
+    }
+
+    req = urllib.request.Request(
+        GITHUB_ISSUES_URL,
+        data=json.dumps(issue).encode(),
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type":  "application/json",
+            "Accept":        "application/vnd.github+json",
+            "User-Agent":    f"whois-extracter/{__version__}",
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            resp_data = json.loads(resp.read())
+            issue_url = resp_data.get("html_url", "")
+            print(f"[+] Submitted → {issue_url}")
+            print("    Your domain will appear on the Risk Board once GitHub Actions processes it (~2 min).")
+    except Exception as e:
+        print(f"[!] Submission failed: {e}")
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# STEP 8 — CLI Entry Point
 # ════════════════════════════════════════════════════════════════════════════
 
 def main():
@@ -1049,8 +1152,28 @@ Examples:
         "--ttl", type=int, default=24, metavar="HOURS",
         help="Cache TTL in hours (default: 24)"
     )
+    parser.add_argument(
+        "--submit", action="store_true",
+        help="Submit result to the public Risk Board (opt-in; requires GitHub token on first use)"
+    )
+    parser.add_argument(
+        "--reconfigure", action="store_true",
+        help="Re-run setup wizard to update stored GitHub token / display name"
+    )
 
     args = parser.parse_args()
+
+    # Handle --reconfigure
+    if args.reconfigure:
+        setup_wizard()
+        return
+
+    # Load or run wizard if --submit requested
+    config = None
+    if args.submit:
+        config = load_config()
+        if config is None:
+            config = setup_wizard()
 
     domain = args.domain.strip().lower()
 
@@ -1059,8 +1182,20 @@ Examples:
         domain = domain.split("//", 1)[1].split("/")[0]
         print(f"[*] Stripped protocol prefix → querying: {domain}")
 
-    run(domain, no_cache=args.no_cache, ttl_hours=args.ttl,
-        output_path=args.output)
+    result = run(domain, no_cache=args.no_cache, ttl_hours=args.ttl,
+                 output_path=args.output)
+
+    if args.submit and result and config:
+        print(f"\n  Domain   : {result.get('domain')}")
+        print(f"  Risk     : {result.get('analysis', {}).get('risk_level')} "
+              f"({result.get('analysis', {}).get('risk_score')}/100)")
+        print(f"  Listed as: {config.get('display_name')} — {config.get('display_loc')}")
+        print("\n  This result will be publicly listed on the Risk Board.")
+        confirm = input("  Submit? [y/N] : ").strip().lower()
+        if confirm == "y":
+            submit_result(result, config)
+        else:
+            print("[*] Submission cancelled.")
 
 
 if __name__ == "__main__":

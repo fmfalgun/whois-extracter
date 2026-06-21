@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>whois-extracter — Community Risk Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="index.html">WHOIS-EXTRACTER</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="risk-board.html" class="nav-active">Risk Board</a>
+      <a href="demo.html">Live Demo</a>
+      <a href="https://github.com/fmfalgun/whois-extracter" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      <a href="https://fmfalgun.github.io" target="_blank" rel="noopener noreferrer">Portfolio ↗</a>
+    </div>
+  </nav>
+
+  <div class="hof-subheader">
+    <span id="rb-stats">— domains · — scans indexed</span>
+  </div>
+
+  <div id="error-box"><span id="error-message"></span></div>
+
+  <main id="main">
+
+    <div id="rb-disclaimer">
+      <span class="disclaimer-icon">⚠</span>
+      All entries below were submitted via <code>whois-extracter --submit</code>.
+      Submitters acknowledged their scan would be publicly listed here.
+      <strong>Only query domains you have permission to enumerate.</strong>
+    </div>
+
+    <div id="rb-howto">
+      <span class="howto-label">[ // ADD YOUR DOMAIN ]</span>
+      <code class="howto-cmd">python3 whois-extracter.py -d yourdomain.com --submit</code>
+      <a href="https://github.com/fmfalgun/whois-extracter" target="_blank" rel="noopener noreferrer" class="howto-link">→ GitHub ↗</a>
+    </div>
+
+    <div id="search-row">
+      <input id="search-input" type="text" placeholder="filter domains..." autocomplete="off" spellcheck="false">
+      <span id="search-count"></span>
+    </div>
+
+    <div id="domain-list"></div>
+
+  </main>
+
+  <footer class="site-footer">
+    Built by <a href="https://fmfalgun.github.io" target="_blank" rel="noopener noreferrer">Falgun Marothia</a>
+    &middot; <a href="index.html">← Home</a>
+    &middot; <a href="demo.html">Live Demo</a>
+    &middot; refreshed monthly by GitHub Actions
+  </footer>
+
+  <script src="assets/js/risk-board.js"></script>
+</body>
+</html>

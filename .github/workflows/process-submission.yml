@@ -1,0 +1,146 @@
+name: Process Submission
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.issue.title, '[submission]')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies
+        run: sudo apt-get install -y whois
+
+      - name: Parse submission
+        shell: bash
+        run: |
+          TITLE="${{ github.event.issue.title }}"
+          DOMAIN="${TITLE#\[submission\] }"
+          DOMAIN=$(echo "$DOMAIN" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
+          echo "DOMAIN=$DOMAIN" >> $GITHUB_ENV
+
+          BODY='${{ github.event.issue.body }}'
+          echo "SUBMISSION_JSON<<EOF" >> $GITHUB_ENV
+          echo "$BODY" | head -1 >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Validate domain
+        shell: bash
+        run: |
+          if [[ ! "$DOMAIN" =~ \. ]] || [[ "$DOMAIN" =~ / ]] || [[ ${#DOMAIN} -gt 253 ]]; then
+            echo "INVALID_DOMAIN=true" >> $GITHUB_ENV
+          fi
+
+      - name: Run whois-extracter
+        if: env.INVALID_DOMAIN != 'true'
+        shell: bash
+        run: |
+          mkdir -p web/data/domains
+          python3 whois-extracter.py -d "$DOMAIN" -o "web/data/domains/${DOMAIN}.json" --no-cache
+
+      - name: Merge display metadata and update index
+        if: env.INVALID_DOMAIN != 'true'
+        shell: python3 {0}
+        run: |
+          import json, os
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          domain          = os.environ["DOMAIN"]
+          submission_json = os.environ.get("SUBMISSION_JSON", "{}")
+
+          try:
+              sub = json.loads(submission_json)
+          except Exception:
+              sub = {}
+
+          domain_file = Path(f"web/data/domains/{domain}.json")
+          if not domain_file.exists():
+              print(f"[!] Domain file not found: {domain_file}")
+              exit(0)
+
+          with open(domain_file) as f:
+              data = json.load(f)
+
+          now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+          data["display_name"]   = sub.get("display_name", "")
+          data["display_loc"]    = sub.get("display_loc", "")
+          data["queried_at"]     = sub.get("queried_at", now)
+          data["last_refreshed"] = now
+
+          with open(domain_file, "w") as f:
+              json.dump(data, f, indent=2)
+
+          # Update index.json
+          index_file = Path("web/data/index.json")
+          if index_file.exists():
+              with open(index_file) as f:
+                  index = json.load(f)
+          else:
+              index = {"generated_at": now, "total_domains": 0, "total_scans": 0, "domains": []}
+
+          analysis = data.get("analysis", {})
+          parsed   = data.get("parsed", {})
+          entry = {
+              "domain":          domain,
+              "display_name":    data["display_name"],
+              "display_loc":     data["display_loc"],
+              "queried_at":      data["queried_at"],
+              "last_refreshed":  now,
+              "risk_score":      analysis.get("risk_score", 0),
+              "risk_level":      analysis.get("risk_level", "INFO"),
+              "signals_count":   len(analysis.get("signals", [])),
+              "ns_type":         analysis.get("ns_type", ""),
+              "registrar_tier":  analysis.get("registrar_tier", ""),
+              "age_days":        parsed.get("dates", {}).get("age_days", 0),
+          }
+
+          domains = [d for d in index.get("domains", []) if d["domain"] != domain]
+          domains.append(entry)
+          domains.sort(key=lambda x: x["domain"])
+
+          index["domains"]       = domains
+          index["total_domains"] = len(domains)
+          index["total_scans"]   = len(domains)
+          index["generated_at"]  = now
+
+          with open(index_file, "w") as f:
+              json.dump(index, f, indent=2)
+
+          print(f"[+] Updated index.json: {len(domains)} domains")
+
+      - name: Commit data
+        if: env.INVALID_DOMAIN != 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add web/data/
+          git diff --staged --quiet || (git commit -m "[data] add $DOMAIN [skip ci]" && git push)
+
+      - name: Close issue
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "$INVALID_DOMAIN" = "true" ]; then
+            COMMENT="Invalid domain in submission title. Expected format: \`[submission] example.com\`"
+          else
+            COMMENT="✓ Processed. \`${DOMAIN}\` has been added to the [Risk Board](https://fmfalgun.github.io/whois-extracter/risk-board.html). Results appear within a few minutes after Pages redeploys."
+          fi
+          gh issue comment ${{ github.event.issue.number }} --body "$COMMENT"
+          gh issue close ${{ github.event.issue.number }} --reason completed

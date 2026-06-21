@@ -769,3 +769,130 @@ a:hover { color: var(--cream); }
 #val-risk-level.risk-MEDIUM { color: var(--amber); }
 #val-risk-level.risk-LOW    { color: var(--blue); }
 #val-risk-level.risk-INFO   { color: var(--green); }
+
+/* ── Risk Board — Disclaimer ────────────────────────────────────────── */
+
+#rb-disclaimer {
+  background: rgba(212,136,42,.07);
+  border: 1px solid rgba(212,136,42,.25);
+  border-left: 3px solid var(--amber);
+  padding: .75rem 1rem;
+  font-size: .7rem;
+  letter-spacing: .04em;
+  color: rgba(232,228,217,.7);
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+#rb-disclaimer .disclaimer-icon { color: var(--amber); margin-right: .4rem; }
+#rb-disclaimer strong { color: var(--cream); }
+
+/* ── Risk Board — How to add ────────────────────────────────────────── */
+
+#rb-howto {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  padding: .6rem .9rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  font-size: .68rem;
+}
+
+/* ── Risk Board — Stats subheader ───────────────────────────────────── */
+
+#rb-stats {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  letter-spacing: .08em;
+  color: var(--dim);
+}
+
+/* ── Risk Board — Level section heading ─────────────────────────────── */
+
+.rb-level-heading {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: .5rem 0 .4rem;
+  margin: 1.5rem 0 .75rem;
+  border-bottom: 1px solid var(--border);
+}
+.rb-level-heading.risk-HIGH   { color: var(--red); }
+.rb-level-heading.risk-MEDIUM { color: var(--amber); }
+.rb-level-heading.risk-LOW    { color: var(--blue); }
+.rb-level-heading.risk-INFO   { color: var(--green); }
+
+/* ── Risk Board — Domain cards ──────────────────────────────────────── */
+
+.domain-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  transition: border-left-color .2s, background .2s;
+  margin-bottom: .6rem;
+}
+.domain-card:hover { background: #161A12; border-left-color: var(--cream); }
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: .5rem;
+}
+.card-domain {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cream);
+  letter-spacing: .03em;
+  word-break: break-all;
+}
+.card-date {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  letter-spacing: .06em;
+  color: var(--dim);
+  white-space: nowrap;
+  margin-left: .5rem;
+}
+.card-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-bottom: .5rem;
+}
+.card-stat {
+  font-family: var(--font-mono);
+  font-size: .58rem;
+  letter-spacing: .08em;
+  color: var(--dim);
+  border: 1px solid var(--border);
+  padding: .15rem .4rem;
+  border-radius: 2px;
+}
+
+/* risk chip on card — coloured border matching risk level */
+.risk-chip.risk-HIGH   { color: var(--red);   border-color: rgba(204,51,51,.4); }
+.risk-chip.risk-MEDIUM { color: var(--amber);  border-color: rgba(212,136,42,.4); }
+.risk-chip.risk-LOW    { color: var(--blue);   border-color: rgba(122,168,202,.4); }
+.risk-chip.risk-INFO   { color: var(--green);  border-color: rgba(111,202,122,.4); }
+
+.card-contributor {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  letter-spacing: .06em;
+  color: var(--dim);
+}
+.card-name { color: var(--khaki); margin-right: .4rem; }
+
+/* ── Risk Board — Responsive ────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  #rb-howto { flex-direction: column; align-items: flex-start; gap: .5rem; }
+  #search-input { max-width: 100%; }
+}

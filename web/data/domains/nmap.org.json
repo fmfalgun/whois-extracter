@@ -1,0 +1,65 @@
+{
+  "domain": "nmap.org",
+  "queried_at": "2026-06-21T02:01:44Z",
+  "cached": false,
+  "display_name": "fmfalgun",
+  "display_loc": "Chennai, India",
+  "last_refreshed": "2026-06-21T02:01:44Z",
+  "parsed": {
+    "domain": "nmap.org",
+    "queried_at": "2026-06-21T02:01:44Z",
+    "dates": {
+      "creation": "1999-08-26T00:00:00Z",
+      "updated":  "2024-08-20T00:00:00Z",
+      "expiry":   "2027-08-26T00:00:00Z",
+      "age_days":       9795,
+      "days_to_expiry":  431
+    },
+    "registrar": {
+      "name":         "Network Solutions, LLC",
+      "url":          "http://www.networksolutions.com",
+      "iana_id":      "2",
+      "whois_server": "whois.networksolutions.com",
+      "reseller":     null
+    },
+    "statuses": [
+      "clienttransferprohibited",
+      "clientupdateprohibited",
+      "clientdeleteprohibited"
+    ],
+    "name_servers": [
+      "ns1.seclists.org",
+      "ns2.seclists.org"
+    ],
+    "dnssec": "unsigned",
+    "contacts": {
+      "registrant": {
+        "name":    null,
+        "org":     "Insecure.Com LLC",
+        "email":   null,
+        "phone":   null,
+        "country": "US",
+        "address": null,
+        "city":    null,
+        "state":   null
+      },
+      "admin": { "name": null, "org": null, "email": null },
+      "tech":  { "name": null, "org": null, "email": null }
+    }
+  },
+  "analysis": {
+    "risk_score":     8,
+    "risk_level":     "INFO",
+    "ns_type":        "self-hosted",
+    "registrar_tier": "enterprise",
+    "signals": [
+      { "field": "age",        "level": "INFO", "detail": "Domain is 9795 days old (26 years)" },
+      { "field": "expiry",     "level": "INFO", "detail": "Domain expires in 431 days — stable" },
+      { "field": "locks",      "level": "INFO", "detail": "3 domain lock(s) active" },
+      { "field": "nameserver", "level": "INFO", "detail": "Self-hosted DNS — attempt zone transfer (AXFR) and subdomain brute-force" },
+      { "field": "dnssec",     "level": "LOW",  "detail": "DNSSEC unsigned — DNS responses not cryptographically verified, theoretically vulnerable to cache poisoning" },
+      { "field": "registrar",  "level": "INFO", "detail": "Enterprise registrar (Network Solutions, LLC) — hardened support, hijack unlikely" },
+      { "field": "contacts",   "level": "INFO", "detail": "Registrant contact info redacted (GDPR / privacy service)" }
+    ]
+  }
+}
