@@ -1,0 +1,5 @@
+# stdlib only — no pip dependencies
+# Requires system whois binary:
+#   Ubuntu/Debian: sudo apt install whois
+#   macOS:         brew install whois
+#   Arch:          sudo pacman -S whois

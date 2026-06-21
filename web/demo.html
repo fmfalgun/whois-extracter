@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>whois-extracter — nmap.org demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="index.html">WHOIS-EXTRACTER</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="demo.html" class="nav-active">Live Demo</a>
+      <a href="https://github.com/fmfalgun/whois-extracter" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      <a href="https://fmfalgun.github.io" target="_blank" rel="noopener noreferrer">Portfolio ↗</a>
+    </div>
+  </nav>
+
+  <div class="domain-header">
+    <span id="demo-domain" class="domain-name-display">nmap.org</span>
+    <span class="domain-contributor">whois intelligence demo · updated daily</span>
+  </div>
+
+  <div id="error-box"><span id="error-message"></span></div>
+
+  <section id="stats-row" class="stats-row">
+    <div class="stat-badge">
+      <span class="stat-value" id="val-risk-score">—</span>
+      <span class="stat-label">Risk Score</span>
+    </div>
+    <div class="stat-badge">
+      <span class="stat-value" id="val-risk-level">—</span>
+      <span class="stat-label">Risk Level</span>
+    </div>
+    <div class="stat-badge">
+      <span class="stat-value" id="val-signals">—</span>
+      <span class="stat-label">Signals Fired</span>
+    </div>
+    <div class="stat-badge">
+      <span class="stat-value" id="val-age">—</span>
+      <span class="stat-label">Domain Age (days)</span>
+    </div>
+  </section>
+
+  <main id="results">
+
+    <p id="queried-at-line">data as of <span id="queried-at">—</span></p>
+
+    <!-- DATES section -->
+    <section class="section" id="section-dates">
+      <h2 class="section-title">[ // DATES ]</h2>
+      <div class="infra-grid" id="dates-grid"></div>
+    </section>
+
+    <!-- INFRASTRUCTURE section -->
+    <section class="section" id="section-infra">
+      <h2 class="section-title">[ // INFRASTRUCTURE ]</h2>
+      <div class="infra-grid" id="infra-grid"></div>
+    </section>
+
+    <!-- REGISTRANT section -->
+    <section class="section" id="section-contacts">
+      <h2 class="section-title">[ // REGISTRANT ]</h2>
+      <div class="infra-grid" id="contacts-grid"></div>
+    </section>
+
+    <!-- RISK SIGNALS section -->
+    <section class="section" id="section-signals">
+      <h2 class="section-title">[ // RISK SIGNALS ]</h2>
+      <div class="entry-list" id="signals-list"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <a href="index.html">← home</a>
+    &middot; <a href="https://github.com/fmfalgun/whois-extracter" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    &middot; refreshed daily by GitHub Actions
+  </footer>
+
+  <script src="assets/js/demo.js"></script>
+</body>
+</html>

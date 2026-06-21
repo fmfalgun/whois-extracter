@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>whois-extracter — Domain Registration Risk Intelligence</title>
+  <meta name="description" content="whois-extracter — parse WHOIS records, score domain hijack risk, detect NS infrastructure exposure. Zero pip deps, pure Python stdlib, offline SQLite cache.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">WHOIS-EXTRACTER</a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-active">Home</a>
+    <a href="demo.html">Live Demo</a>
+    <a href="https://github.com/fmfalgun/whois-extracter" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    <a href="https://fmfalgun.github.io" target="_blank" rel="noopener noreferrer">Portfolio ↗</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>WHOIS <span>Extracter</span></h1>
+  <p>Parse registrar data · score hijack risk · map infrastructure — via WHOIS</p>
+  <div class="install-block">
+    <code class="install-cmd">python3 whois-extracter.py -d target.com</code>
+  </div>
+  <div class="hero-cta-row">
+    <a href="demo.html" class="cta-btn">→ Live Demo</a>
+    <a href="https://github.com/fmfalgun/whois-extracter" target="_blank" rel="noopener noreferrer" class="cta-ghost">GitHub ↗</a>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT: sticky info panel -->
+  <aside class="info-panel">
+
+    <div class="panel-block">
+      <div class="panel-heading">&gt; WHAT IS WHOIS</div>
+      <p class="panel-text">
+        <span class="hl">WHOIS</span> is the registration database behind every domain. When a domain
+        is registered, the registrar submits the registrant name, contact email, nameservers, and
+        expiry date to a central registry.
+      </p>
+      <p class="panel-text">
+        The <code class="inline-code">whois</code> binary queries these registries directly — different
+        servers for <code class="inline-code">.com</code> (Verisign), <code class="inline-code">.org</code>
+        (AFILIAS), <code class="inline-code">.uk</code> (Nominet), and country-code TLDs.
+      </p>
+      <p class="panel-text">
+        Because registrants must supply contact data at registration time, WHOIS reveals
+        <span class="hl">infrastructure choices made before deployment</span> — registrar tier,
+        NS provider, DNSSEC status, lock configuration.
+      </p>
+    </div>
+
+    <div class="panel-block">
+      <div class="panel-heading">&gt; WHY THIS SCRIPT</div>
+      <p class="panel-text">
+        The raw <code class="inline-code">whois</code> output is <span class="hl">unstructured text</span>:
+        inconsistent field names, variable date formats, GDPR redactions. No classification, no scoring.
+      </p>
+      <p class="panel-text">What this script adds:</p>
+      <ul class="panel-list">
+        <li>Parses 20+ field variations across registrars</li>
+        <li>Scores risk: domain age, expiry window, lock count, NS type, registrar tier</li>
+        <li>Detects: personal email, single point of failure, server cluster ID in NS hostname</li>
+        <li>SQLite cache — repeat queries instant (24h TTL)</li>
+        <li>Structured JSON for piping</li>
+      </ul>
+    </div>
+
+    <div class="panel-block">
+      <div class="panel-heading">&gt; HOW IT WORKS</div>
+      <div class="arch-diagram">
+        <div class="arch-box input-box">python3 whois-extracter.py -d target.com</div>
+        <div class="arch-arrow">▼</div>
+        <div class="arch-box engine-box">system whois binary<span class="arch-sub">routes to correct registry: Verisign / RIPE / APNIC</span></div>
+        <div class="arch-arrow">▼</div>
+        <div class="arch-cache">
+          <div class="cache-label">SQLITE CACHE (cache.db)</div>
+          <div class="cache-sub">fresh (&lt;24h)? serve instantly<br>stale? call whois binary</div>
+        </div>
+        <div class="arch-arrow">▼</div>
+        <div class="arch-box engine-box">PARSE + RISK ANALYZE<span class="arch-sub">20+ fields · score 0–100 · signals list</span></div>
+        <div class="arch-arrow">▼</div>
+        <div class="arch-box output-box">JSON OUTPUT + STDOUT SUMMARY</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- RIGHT: main content -->
+  <main class="home-main">
+
+    <div class="panel-block home-panel">
+      <div class="panel-heading">&gt; USAGE</div>
+      <div class="code-block">
+        <div class="code-comment"># basic query — results printed + cached</div>
+        <pre class="code-pre">python3 whois-extracter.py -d target.com</pre>
+        <div class="code-comment"># save full JSON to file</div>
+        <pre class="code-pre">python3 whois-extracter.py -d target.com -o results.json</pre>
+        <div class="code-comment"># bypass cache, always fetch fresh</div>
+        <pre class="code-pre">python3 whois-extracter.py -d target.com --no-cache</pre>
+        <div class="code-comment"># set custom cache TTL (hours)</div>
+        <pre class="code-pre">python3 whois-extracter.py -d target.com --ttl 6</pre>
+      </div>
+    </div>
+
+    <div class="panel-block home-panel">
+      <div class="panel-heading">&gt; OUTPUT SCHEMA</div>
+      <div class="code-block">
+<pre class="code-pre">{
+  "domain":     "nmap.org",
+  "queried_at": "2026-06-21T02:00:00Z",
+  "cached":     false,
+  "parsed": {
+    "dates":       { "creation": "1999-08-26", "age_days": 9797, "days_to_expiry": 430 },
+    "registrar":   { "name": "Network Solutions, LLC", "iana_id": "2" },
+    "statuses":    ["clienttransferprohibited", "clientupdateprohibited"],
+    "name_servers":["ns1.seclists.org", "ns2.seclists.org"],
+    "dnssec":      "unsigned",
+    "contacts":    { "registrant": { "org": "Insecure.Com LLC" }, ... }
+  },
+  "analysis": {
+    "risk_score":     8,
+    "risk_level":     "INFO",
+    "ns_type":        "self-hosted",
+    "registrar_tier": "enterprise",
+    "signals": [
+      { "field": "age",      "level": "INFO", "detail": "Domain is 9797 days old (26 years)" },
+      { "field": "dnssec",   "level": "LOW",  "detail": "DNSSEC unsigned — not cryptographically verified" },
+      { "field": "registrar","level": "INFO", "detail": "Enterprise registrar — hardened support" }
+    ]
+  }
+}</pre>
+      </div>
+      <p class="panel-text schema-note">
+        <span class="risk-HIGH">HIGH</span> &ge;60 &middot;
+        <span class="risk-MEDIUM">MEDIUM</span> &ge;30 &middot;
+        <span class="risk-LOW">LOW</span> &ge;10 &middot;
+        <span class="risk-INFO">INFO</span> &lt;10
+      </p>
+    </div>
+
+    <div class="panel-block home-panel">
+      <div class="panel-heading">&gt; RISK SCORING — HOW IT WORKS</div>
+      <p class="panel-text">
+        The risk engine walks every parsed field and assigns weighted penalty points. Score is capped at 100.
+        A domain with multiple compounding signals — newly registered, no locks, personal email, budget
+        registrar — accumulates fast. A well-configured domain (10+ years old, enterprise registrar,
+        4 locks, DNSSEC signed) scores near zero.
+      </p>
+      <p class="panel-text">Signal weights:</p>
+      <ul class="panel-list">
+        <li>Domain &lt; 7 days old — <span class="risk-HIGH">+30</span></li>
+        <li>Expired domain — <span class="risk-HIGH">+25</span></li>
+        <li>No domain locks — <span class="risk-MEDIUM">+15</span></li>
+        <li>Personal email on any contact — <span class="risk-MEDIUM">+10</span> each</li>
+        <li>Shared hosting nameservers — <span class="risk-LOW">+5</span></li>
+        <li>Budget / low-tier registrar — <span class="risk-LOW">+5</span></li>
+        <li>DNSSEC unsigned — <span class="risk-INFO">+3</span></li>
+      </ul>
+      <p class="panel-text">
+        Every signal that fires is emitted in the <code class="inline-code">signals</code> array with its
+        field name, level, and human-readable detail — making the score fully auditable.
+      </p>
+    </div>
+
+    <div class="hof-cta-card">
+      <div class="hof-cta-label">[ // LIVE DEMO ]</div>
+      <p class="hof-cta-desc">
+        See whois-extracter running against <code class="inline-code">nmap.org</code> — full parsed output,
+        risk signals, and infrastructure classification. Updated daily by GitHub Actions.
+      </p>
+      <a href="demo.html" class="cta-btn">→ Open Live Demo</a>
+    </div>
+
+  </main>
+
+</div>
+
+<footer class="site-footer">
+  Built by <a href="https://fmfalgun.github.io" target="_blank" rel="noopener noreferrer">Falgun Marothia</a>
+  &middot; data from IANA WHOIS
+  &middot; <a href="https://github.com/fmfalgun/whois-extracter" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+  &middot; <a href="demo.html">Live Demo</a>
+</footer>
+
+</body>
+</html>
