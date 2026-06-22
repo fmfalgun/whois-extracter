@@ -1,88 +1,97 @@
 {
   "domain": "nmap.org",
-  "queried_at": "2026-06-21T02:01:44Z",
+  "queried_at": "2026-06-22T07:10:40.607327+00:00",
   "cached": false,
   "parsed": {
     "domain": "nmap.org",
-    "queried_at": "2026-06-21T02:01:44Z",
+    "queried_at": "2026-06-22T07:10:40.590203+00:00",
     "dates": {
-      "creation": "1999-08-26T00:00:00Z",
-      "updated":  "2024-08-20T00:00:00Z",
-      "expiry":   "2027-08-26T00:00:00Z",
-      "age_days":       9795,
-      "days_to_expiry":  431
+      "creation": "1999-01-18T05:00:00Z",
+      "updated": "2026-04-10T17:35:09Z",
+      "expiry": "2029-01-18T05:00:00Z",
+      "age_days": 10017,
+      "days_to_expiry": 940
     },
     "registrar": {
-      "name":         "Network Solutions, LLC",
-      "url":          "http://www.networksolutions.com",
-      "iana_id":      "2",
-      "whois_server": "whois.networksolutions.com",
-      "reseller":     null
+      "name": "Dynadot Inc",
+      "url": "http://www.dynadot.com",
+      "iana_id": "472",
+      "whois_server": "whois.dynadot.com",
+      "reseller": null
     },
     "statuses": [
-      "clienttransferprohibited",
-      "clientupdateprohibited",
-      "clientdeleteprohibited"
+      "clienttransferprohibited"
     ],
     "name_servers": [
-      "ns1.seclists.org",
-      "ns2.seclists.org"
+      "ns1.linode.com",
+      "ns4.linode.com",
+      "ns5.linode.com",
+      "ns3.linode.com",
+      "ns2.linode.com"
     ],
     "dnssec": "unsigned",
     "contacts": {
       "registrant": {
-        "name":    null,
-        "org":     "Insecure.Com LLC",
-        "email":   null,
-        "phone":   null,
-        "country": "US",
+        "name": null,
+        "org": null,
+        "email": null,
+        "phone": null,
+        "country": null,
         "address": null,
-        "city":    null,
-        "state":   null
+        "city": null,
+        "state": null
       },
-      "admin": { "name": null, "org": null, "email": null },
-      "tech":  { "name": null, "org": null, "email": null }
+      "admin": {
+        "name": null,
+        "org": null,
+        "email": null
+      },
+      "tech": {
+        "name": null,
+        "org": null,
+        "email": null
+      }
     }
   },
   "analysis": {
-    "risk_score":     8,
-    "risk_level":     "INFO",
-    "ns_type":        "self-hosted",
-    "registrar_tier": "enterprise",
+    "risk_score": 13,
+    "risk_level": "LOW",
+    "ns_type": "self-hosted",
+    "registrar_tier": "budget",
     "signals": [
       {
-        "field":  "age",
-        "level":  "INFO",
-        "detail": "Domain is 9795 days old (26 years)"
+        "field": "age",
+        "level": "INFO",
+        "detail": "Domain is 10017 days old (27 years)"
       },
       {
-        "field":  "expiry",
-        "level":  "INFO",
-        "detail": "Domain expires in 431 days — stable"
+        "field": "expiry",
+        "level": "INFO",
+        "detail": "Domain expires in 940 days — stable"
       },
       {
-        "field":  "locks",
-        "level":  "INFO",
-        "detail": "3 domain lock(s) active"
+        "field": "locks",
+        "level": "MEDIUM",
+        "detail": "Only 1 lock(s) active — partial protection, gaps remain"
       },
       {
-        "field":  "nameserver",
-        "level":  "INFO",
+        "field": "nameserver",
+        "level": "INFO",
         "detail": "Self-hosted DNS — attempt zone transfer (AXFR) and subdomain brute-force"
       },
       {
-        "field":  "dnssec",
-        "level":  "LOW",
+        "field": "dnssec",
+        "level": "LOW",
         "detail": "DNSSEC unsigned — DNS responses not cryptographically verified, theoretically vulnerable to cache poisoning"
       },
       {
-        "field":  "registrar",
-        "level":  "INFO",
-        "detail": "Enterprise registrar (Network Solutions, LLC) — hardened support, hijack unlikely"
+        "field": "registrar",
+        "level": "MEDIUM",
+        "detail": "Budget registrar (Dynadot Inc) — support team more susceptible to social engineering for unauthorised domain transfer"
       },
       {
-        "field":  "contacts",
-        "level":  "INFO",
+        "field": "contacts",
+        "level": "INFO",
         "detail": "Registrant contact info redacted (GDPR / privacy service)"
       }
     ]
