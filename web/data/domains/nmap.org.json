@@ -1,16 +1,16 @@
 {
   "domain": "nmap.org",
-  "queried_at": "2026-06-25T05:56:54.882767+00:00",
+  "queried_at": "2026-06-26T06:00:37.181895+00:00",
   "cached": false,
   "parsed": {
     "domain": "nmap.org",
-    "queried_at": "2026-06-25T05:56:54.865877+00:00",
+    "queried_at": "2026-06-26T06:00:37.163963+00:00",
     "dates": {
       "creation": "1999-01-18T05:00:00Z",
       "updated": "2026-04-10T17:35:09Z",
       "expiry": "2029-01-18T05:00:00Z",
-      "age_days": 10020,
-      "days_to_expiry": 937
+      "age_days": 10021,
+      "days_to_expiry": 936
     },
     "registrar": {
       "name": "Dynadot Inc",
@@ -24,10 +24,10 @@
     ],
     "name_servers": [
       "ns5.linode.com",
-      "ns3.linode.com",
       "ns2.linode.com",
-      "ns4.linode.com",
-      "ns1.linode.com"
+      "ns3.linode.com",
+      "ns1.linode.com",
+      "ns4.linode.com"
     ],
     "dnssec": "unsigned",
     "contacts": {
@@ -62,12 +62,12 @@
       {
         "field": "age",
         "level": "INFO",
-        "detail": "Domain is 10020 days old (27 years)"
+        "detail": "Domain is 10021 days old (27 years)"
       },
       {
         "field": "expiry",
         "level": "INFO",
-        "detail": "Domain expires in 937 days \u2014 stable"
+        "detail": "Domain expires in 936 days \u2014 stable"
       },
       {
         "field": "locks",
@@ -98,5 +98,5 @@
   },
   "display_name": "fmfalgun",
   "display_loc": "Chennai, India",
-  "last_refreshed": "2026-06-25T05:56:54Z"
+  "last_refreshed": "2026-06-26T06:00:37Z"
 }
