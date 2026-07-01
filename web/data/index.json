@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-01T06:16:22Z",
+  "generated_at": "2026-07-01T07:17:21Z",
   "total_domains": 1,
   "total_scans": 1,
   "domains": [
@@ -8,7 +8,7 @@
       "display_name": "fmfalgun",
       "display_loc": "Chennai, India",
       "queried_at": "2026-07-01T06:16:22.582662+00:00",
-      "last_refreshed": "2026-07-01T06:16:22Z",
+      "last_refreshed": "2026-07-01T07:17:21Z",
       "risk_score": 13,
       "risk_level": "LOW",
       "signals_count": 7,
