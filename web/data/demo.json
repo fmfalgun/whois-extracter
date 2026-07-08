@@ -1,10 +1,10 @@
 {
   "domain": "nmap.org",
-  "queried_at": "2026-07-07T05:58:27.502583+00:00",
+  "queried_at": "2026-07-08T04:57:59.630929+00:00",
   "cached": false,
   "parsed": {
     "domain": "nmap.org",
-    "queried_at": "2026-07-07T05:58:27.484212+00:00",
+    "queried_at": "2026-07-08T04:57:59.608468+00:00",
     "dates": {
       "creation": "1999-01-18T05:00:00Z",
       "updated": "2026-04-10T17:35:09Z",
@@ -24,10 +24,10 @@
     ],
     "name_servers": [
       "ns3.linode.com",
-      "ns5.linode.com",
-      "ns4.linode.com",
       "ns1.linode.com",
-      "ns2.linode.com"
+      "ns2.linode.com",
+      "ns5.linode.com",
+      "ns4.linode.com"
     ],
     "dnssec": "unsigned",
     "contacts": {
