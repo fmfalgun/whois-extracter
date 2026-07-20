@@ -1,16 +1,16 @@
 {
   "domain": "nmap.org",
-  "queried_at": "2026-07-19T05:01:55.473315+00:00",
+  "queried_at": "2026-07-20T05:29:28.254539+00:00",
   "cached": false,
   "parsed": {
     "domain": "nmap.org",
-    "queried_at": "2026-07-19T05:01:55.451952+00:00",
+    "queried_at": "2026-07-20T05:29:28.233638+00:00",
     "dates": {
       "creation": "1999-01-18T05:00:00Z",
       "updated": "2026-04-10T17:35:09Z",
       "expiry": "2029-01-18T05:00:00Z",
-      "age_days": 10044,
-      "days_to_expiry": 913
+      "age_days": 10045,
+      "days_to_expiry": 912
     },
     "registrar": {
       "name": "Dynadot Inc",
@@ -24,10 +24,10 @@
     ],
     "name_servers": [
       "ns2.linode.com",
-      "ns4.linode.com",
+      "ns3.linode.com",
       "ns1.linode.com",
-      "ns5.linode.com",
-      "ns3.linode.com"
+      "ns4.linode.com",
+      "ns5.linode.com"
     ],
     "dnssec": "unsigned",
     "contacts": {
@@ -62,12 +62,12 @@
       {
         "field": "age",
         "level": "INFO",
-        "detail": "Domain is 10044 days old (27 years)"
+        "detail": "Domain is 10045 days old (27 years)"
       },
       {
         "field": "expiry",
         "level": "INFO",
-        "detail": "Domain expires in 913 days — stable"
+        "detail": "Domain expires in 912 days — stable"
       },
       {
         "field": "locks",
