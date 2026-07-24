@@ -1,10 +1,10 @@
 {
   "domain": "nmap.org",
-  "queried_at": "2026-07-23T05:14:34.606099+00:00",
+  "queried_at": "2026-07-24T04:59:47.803373+00:00",
   "cached": false,
   "parsed": {
     "domain": "nmap.org",
-    "queried_at": "2026-07-23T05:14:34.598658+00:00",
+    "queried_at": "2026-07-24T04:59:47.774750+00:00",
     "dates": {
       "creation": "1999-01-18T05:00:00Z",
       "updated": "2026-04-10T17:35:09Z",
@@ -23,10 +23,10 @@
       "clienttransferprohibited"
     ],
     "name_servers": [
-      "ns2.linode.com",
-      "ns1.linode.com",
-      "ns3.linode.com",
       "ns4.linode.com",
+      "ns2.linode.com",
+      "ns3.linode.com",
+      "ns1.linode.com",
       "ns5.linode.com"
     ],
     "dnssec": "unsigned",
@@ -98,5 +98,5 @@
   },
   "display_name": "fmfalgun",
   "display_loc": "Chennai, India",
-  "last_refreshed": "2026-07-23T05:14:34Z"
+  "last_refreshed": "2026-07-24T04:59:47Z"
 }
