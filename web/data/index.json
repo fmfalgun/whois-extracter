@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T07:40:54Z",
+  "generated_at": "2026-11-01T08:20:04Z",
   "total_domains": 1,
   "total_scans": 1,
   "domains": [
@@ -7,14 +7,14 @@
       "domain": "nmap.org",
       "display_name": "fmfalgun",
       "display_loc": "Chennai, India",
-      "queried_at": "2026-10-31T07:40:54.238134+00:00",
-      "last_refreshed": "2026-10-31T07:40:54Z",
+      "queried_at": "2026-11-01T08:20:04.070200+00:00",
+      "last_refreshed": "2026-11-01T08:20:04Z",
       "risk_score": 13,
       "risk_level": "LOW",
       "signals_count": 7,
       "ns_type": "self-hosted",
       "registrar_tier": "budget",
-      "age_days": 10148
+      "age_days": 10149
     }
   ]
 }
