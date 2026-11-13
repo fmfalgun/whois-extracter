@@ -1,16 +1,16 @@
 {
   "domain": "nmap.org",
-  "queried_at": "2026-11-12T08:56:19.975707+00:00",
+  "queried_at": "2026-11-13T08:52:30.676485+00:00",
   "cached": false,
   "parsed": {
     "domain": "nmap.org",
-    "queried_at": "2026-11-12T08:56:19.969174+00:00",
+    "queried_at": "2026-11-13T08:52:30.667316+00:00",
     "dates": {
       "creation": "1999-01-18T05:00:00Z",
       "updated": "2026-10-15T23:04:58Z",
       "expiry": "2032-01-18T05:00:00Z",
-      "age_days": 10160,
-      "days_to_expiry": 1892
+      "age_days": 10161,
+      "days_to_expiry": 1891
     },
     "registrar": {
       "name": "Dynadot Inc",
@@ -62,12 +62,12 @@
       {
         "field": "age",
         "level": "INFO",
-        "detail": "Domain is 10160 days old (27 years)"
+        "detail": "Domain is 10161 days old (27 years)"
       },
       {
         "field": "expiry",
         "level": "INFO",
-        "detail": "Domain expires in 1892 days — stable"
+        "detail": "Domain expires in 1891 days — stable"
       },
       {
         "field": "locks",
